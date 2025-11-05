@@ -1,10 +1,10 @@
 from pathlib import Path
 from solver import solve_spellingbee
 
-LETTERS = "AESLTRN"   # any order; 7 distinct letters
+LETTERS = "AESLTRN"   # 7 distinct letters
 CENTER  = "A"
-WORDLIST = Path("wordlist.txt")  # your dictionary file
-TOP_K = 20  # how many “best options” to show
+WORDLIST = Path("wordlist.txt")  # dictionary file
+TOP_K = 20
 
 
 def print_top(results, k=20):
