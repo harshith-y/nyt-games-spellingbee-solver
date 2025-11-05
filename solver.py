@@ -1,17 +1,16 @@
-#!/usr/bin/env python3
 """
 NYT Spelling Bee Solver (curated)
-- Letters can be reused.
-- Must include center.
-- >= 4 letters.
-- Only from the 7 letters.
-Scoring:
-- len=4 => 1 point, else length
-- Pangram (+7)
+    - Letters can be reused.
+    - Must include center.
+    - >= 4 letters.
+    - Only from the 7 letters.
+    Scoring:
+    - len=4 => 1 point, else length
+    - Pangram (+7)
 
 Extras:
-- min_zipf: filter rare words using wordfreq Zipf scores (higher = more common)
-- max_len: drop very long words (NYT list rarely includes >9–10)
+    - min_zipf: filter rare words using wordfreq Zipf scores (higher = more common)
+    - max_len: drop very long words (NYT list rarely includes >9–10)
 """
 
 from __future__ import annotations
@@ -20,7 +19,6 @@ from pathlib import Path
 from typing import List, Sequence, Iterable, Tuple, Optional
 import re
 
-# Optional dependency: wordfreq
 try:
     from wordfreq import zipf_frequency  # type: ignore
 except Exception:
@@ -65,19 +63,11 @@ def solve_spellingbee(
     pangram_bonus: int = 7,
     *,
     # NEW:
-    min_zipf: Optional[float] = None,  # e.g., 3.5 (requires `wordfreq`)
-    max_len: Optional[int] = 10,       # e.g., 9 or 10 to trim long forms
+    min_zipf: Optional[float] = None,
+    max_len: Optional[int] = 10,
 ) -> List[WordResult]:
     """
     Returns sorted results by (score desc, word asc).
-
-    min_zipf:
-      - If provided and wordfreq is installed, keeps only words with
-        zipf_frequency(word, 'en') >= min_zipf.
-      - If wordfreq isn't installed, this parameter is ignored.
-
-    max_len:
-      - If provided, drop words longer than this length.
     """
     letters = [c.lower() for c in letters]
     center = center.lower()
@@ -94,11 +84,11 @@ def solve_spellingbee(
         if not _is_valid_word(word, uniq_letters, center, min_len=min_len):
             continue
 
-        # Length cap (helps remove “alternateness”-style words)
+        # Length cap
         if max_len is not None and len(word) > max_len:
             continue
 
-        # Frequency filter (if requested and available)
+        # Frequency filter
         if min_zipf is not None and zipf_frequency is not None:
             if zipf_frequency(word, "en") < min_zipf:
                 continue
@@ -109,7 +99,6 @@ def solve_spellingbee(
     results.sort(key=lambda r: (-r.score, r.word))
     return results
 
-# Pretty printing helpers (unchanged)
 def print_best(results: List[WordResult], n: int = 20) -> None:
     print(f"=== Top {n} words ===")
     for r in results[:n]:
